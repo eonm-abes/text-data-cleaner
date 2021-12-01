@@ -49,7 +49,6 @@ impl SpaceTrimmer {
     }
 }
 
-
 impl Clean for SpaceTrimmer {
     type Data = String;
     fn clean(&self, data: &mut Self::Data) {

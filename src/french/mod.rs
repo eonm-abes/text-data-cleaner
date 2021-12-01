@@ -1,11 +1,13 @@
 use std::ops::RangeInclusive;
 
-
 use crate::clean::Clean;
-use crate::common::{AppendAfterCharIfDifferent, PrependBeforeCharIfDifferent, AppendAfterCharIf, PrependBeforeCharIf};
-use crate::whitespaces::SpaceTrimmer;
+use crate::common::{
+    AppendAfterCharIf, AppendAfterCharIfDifferent, PrependBeforeCharIf,
+    PrependBeforeCharIfDifferent,
+};
 use crate::normalize::Normalize;
 use crate::substitutions::{substitutions, Substitute, SubstitutionsList};
+use crate::whitespaces::SpaceTrimmer;
 
 /// Substitutions for the French language
 pub struct FrenchSubstitutions {
@@ -71,29 +73,27 @@ impl Normalize for FrenchTypography {
         let char_starting_with_space = ['»', '(', ':', ';', '!', '?', '«'];
         let char_ending_with_space = ['.', '«', ',', ')', ':', ';'];
 
+        let test_next_char_is_space_or_punct =
+            move |next_char: Option<char>, matching_char: char, _replacement: char| {
+                let french_punct = ['.'];
 
-        let test_next_char_is_space_or_punct = move |next_char: Option<char>, matching_char: char, _replacement: char| {
-            let french_punct = ['.'];
-            
-            if let Some(next_char) = next_char {
-                println!("matching char `{}` next `{}`", matching_char, next_char,);
-                !next_char.is_whitespace() && !french_punct.contains(&next_char)
-            } else {
-                true
-            }
-        };
-        
-               
+                if let Some(next_char) = next_char {
+                    println!("matching char `{}` next `{}`", matching_char, next_char,);
+                    !next_char.is_whitespace() && !french_punct.contains(&next_char)
+                } else {
+                    true
+                }
+            };
+
         for elem in char_starting_with_space {
             PrependBeforeCharIfDifferent::new(elem, ' ').normalize(data);
         }
-        
+
         for elem in char_ending_with_space {
             AppendAfterCharIf::new(elem, ' ', test_next_char_is_space_or_punct).normalize(data);
         }
 
         SpaceTrimmer::new().clean(data);
-        
     }
 }
 

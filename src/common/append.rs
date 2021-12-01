@@ -50,7 +50,7 @@ impl Normalize for AppendAfterCharIf {
     fn normalize(&self, data: &mut Self::Data) {
         data.rfind(self.target_char).map(|index| {
             let next_char_index = index + self.target_char.len_utf8();
-            
+
             let next_char = if next_char_index <= data.len() {
                 data[index + self.target_char.len_utf8()..].chars().nth(0)
             } else {
@@ -220,7 +220,5 @@ mod tests {
         append_if_different.normalize(&mut data);
 
         assert_eq!(" : eee", data);
-
-        
     }
 }
